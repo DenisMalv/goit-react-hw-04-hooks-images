@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { MainContainer } from './App.styled.js';
 
 import Searchbar from './Searchbar/Searchbar';
@@ -10,81 +10,76 @@ import Modal from './Modal/Modal';
 
 import galleryApi from '../services/image-gallery-api';
 
-class App extends Component {
-  state = {
-    query: '',
-    page: 0,
-    queryResponponce: [],
-    error: null,
-    status: '',
-    showModal: false,
-    modalImage: null,
-  };
+const App = () => {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(0);
+  const [queryResponponce, setQueryResponse] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
 
-  componentDidUpdate(prevProps, prevState) {
-    const { query, page } = this.state;
-
-    if (prevState.query !== query || prevState.page !== page) {
-      this.setState({ status: 'pending' });
-      if (page === 1) {
-        this.setState({ queryResponponce: [] });
-      }
-
-      galleryApi
-        .fetchImages(query, page)
-        .then(({ hits }) => {
-          const smallHits = galleryApi.smallFetchResponse(hits);
-          this.setState(({ queryResponponce }) => ({
-            queryResponponce: [...queryResponponce, ...smallHits],
-            status: 'resolved',
-          }));
-          window.scrollBy({
-            top: document.body.clientHeight,
-            behavior: 'smooth',
-          });
-        })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+  useEffect(() => {
+    if (query === '') {
+      return;
     }
-  }
+    if (page === 1) {
+      setQueryResponse([]);
+    }
+    setStatus('pending');
+    galleryApi
+      .fetchImages(query, page)
+      .then(({ hits }) => {
+        const smallHits = galleryApi.smallFetchResponse(hits);
+        setQueryResponse(prevQueryResponponce => [
+          ...prevQueryResponponce,
+          ...smallHits,
+        ]);
+        setStatus('resolved');
+        window.scrollBy({
+          top: document.body.clientHeight,
+          behavior: 'smooth',
+        });
+      })
+      .catch(error => {
+        setError(error);
+        setStatus('rejected');
+      });
+  }, [query, page]);
 
-  handleSubmit = query => {
-    this.setState({ query, page: 1 });
+  const handleSubmit = query => {
+    setQuery(query);
+    setPage(1);
   };
-  handleLoadMore = () => {
-    this.setState(prevState => ({ ...prevState, page: prevState.page + 1 }));
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  const toggleModal = () => {
+    setShowModal(prevState => !prevState);
   };
 
-  handleModalLargeImage = image => {
-    this.setState({ modalImage: image });
+  const handleModalLargeImage = image => {
+    setModalImage(image);
   };
-
-  render() {
-    const { queryResponponce, status, showModal, modalImage } = this.state;
-
-    return (
-      <MainContainer>
-        <Searchbar>
-          <SearchForm onSubmit={this.handleSubmit} />
-        </Searchbar>
-        {queryResponponce.length !== 0 && (
-          <ImageGallery
-            images={queryResponponce}
-            toggleModal={this.toggleModal}
-            modalImage={this.handleModalLargeImage}
-          />
-        )}
-        {status === 'pending' && <Loader />}
-        {status === 'resolved' && <Button nextPage={this.handleLoadMore} />}
-        {showModal && (
-          <Modal onClose={this.toggleModal} largeImage={modalImage} />
-        )}
-      </MainContainer>
-    );
-  }
-}
+  return (
+    <MainContainer>
+      <Searchbar>
+        <SearchForm onSubmit={handleSubmit} />
+      </Searchbar>
+      {queryResponponce.length !== 0 && (
+        <ImageGallery
+          images={queryResponponce}
+          toggleModal={toggleModal}
+          modalImage={handleModalLargeImage}
+        />
+      )}
+      {status === 'pending' && <Loader />}
+      {status === 'resolved' && <Button nextPage={handleLoadMore} />}
+      {showModal && <Modal onClose={toggleModal} largeImage={modalImage} />}
+    </MainContainer>
+  );
+};
 
 export default App;
