@@ -1,49 +1,49 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import { Form, SearchButton, SearchInput } from './SearchForm.styled';
 import propTypes from 'prop-types';
 import { BiSearchAlt } from 'react-icons/bi';
 
-class SearchForm extends Component {
-  static propTypes = {
-    onSubmit: propTypes.func.isRequired,
-  };
-  state = {
-    queryValue: '',
-  };
+const SearchForm = ({ onSubmit }) => {
+  const [queryValue, setQueryValue] = useState('');
+  // state = {
+  //   queryValue: '',
+  // };
 
-  handleImputChange = event => {
+  const handleImputChange = event => {
     const { value } = event.currentTarget;
 
-    this.setState({ queryValue: value });
+    setQueryValue(value);
   };
 
-  handleSubmitForm = event => {
+  const handleSubmitForm = event => {
     event.preventDefault();
-    if (this.state.queryValue.trim() === '') {
+    if (queryValue.trim() === '') {
       return;
     }
-    this.props.onSubmit(this.state.queryValue.toLowerCase());
-    this.setState({ queryValue: '' });
+    onSubmit(queryValue.toLowerCase());
+    setQueryValue('');
   };
 
-  render() {
-    return (
-      <Form onSubmit={this.handleSubmitForm}>
-        <SearchButton type="submit">
-          <BiSearchAlt size="32" />
-        </SearchButton>
+  return (
+    <Form onSubmit={handleSubmitForm}>
+      <SearchButton type="submit">
+        <BiSearchAlt size="32" />
+      </SearchButton>
 
-        <SearchInput
-          type="text"
-          autoComplete="off"
-          autoFocus
-          placeolder="Search images and photos"
-          onChange={this.handleImputChange}
-          value={this.state.queryValue}
-        />
-      </Form>
-    );
-  }
-}
+      <SearchInput
+        type="text"
+        autoComplete="off"
+        autoFocus
+        placeolder="Search images and photos"
+        onChange={handleImputChange}
+        value={queryValue}
+      />
+    </Form>
+  );
+};
+
+SearchForm.propTypes = {
+  onSubmit: propTypes.func.isRequired,
+};
 
 export default SearchForm;
