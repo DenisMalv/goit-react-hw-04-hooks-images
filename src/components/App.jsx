@@ -63,6 +63,7 @@ const App = () => {
   const handleModalLargeImage = image => {
     setModalImage(image);
   };
+
   return (
     <MainContainer>
       <Searchbar>
