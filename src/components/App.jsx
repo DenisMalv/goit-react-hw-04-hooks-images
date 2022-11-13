@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef} from 'react';
+import { useState, useEffect,} from 'react';
 import { MainContainer } from './App.styled.js';
 
 import Searchbar from './Searchbar/Searchbar';
