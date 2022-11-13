@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef} from 'react';
 import { MainContainer } from './App.styled.js';
 
 import Searchbar from './Searchbar/Searchbar';
@@ -35,10 +35,12 @@ const App = () => {
           ...smallHits,
         ]);
         setStatus('resolved');
-        window.scrollBy({
-          top: document.body.clientHeight,
-          behavior: 'smooth',
-        });
+        if(page !==1){
+          window.scrollBy({
+            top: document.body.clientHeight,
+            behavior: 'smooth',
+          });
+        }
       })
       .catch(error => {
         setError(error);
