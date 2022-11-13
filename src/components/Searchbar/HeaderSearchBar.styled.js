@@ -4,7 +4,7 @@ export const HeaderSearchBar = styled.header`
   top: 0;
   left: 0;
   position: sticky;
-  z-index: 1100;
+  z-index: 1;
   display: flex;
   flex-direction:column;
   justify-content: center;
