@@ -7,18 +7,17 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
+import QueryNav from './QueryNav/QueryNav.jsx';
 
 import galleryApi from '../services/image-gallery-api';
 
 const App = () => {
-  const [query, setQuery] = useState('');
-  const [page, setPage] = useState(0);
+  const [query, setQuery] = useState('cat');
+  const [page, setPage] = useState(1);
   const [queryResponponce, setQueryResponse] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [modalImage, setModalImage] = useState(null);
 
   useEffect(() => {
     if (query === '') {
@@ -56,29 +55,20 @@ const App = () => {
     setPage(prevPage => prevPage + 1);
   };
 
-  const toggleModal = () => {
-    setShowModal(prevState => !prevState);
-  };
-
-  const handleModalLargeImage = image => {
-    setModalImage(image);
-  };
-
   return (
     <MainContainer>
       <Searchbar>
         <SearchForm onSubmit={handleSubmit} />
+        <QueryNav onSubmit={handleSubmit} />
       </Searchbar>
       {queryResponponce.length !== 0 && (
+        
         <ImageGallery
           images={queryResponponce}
-          toggleModal={toggleModal}
-          modalImage={handleModalLargeImage}
         />
       )}
       {status === 'pending' && <Loader />}
       {status === 'resolved' && <Button nextPage={handleLoadMore} />}
-      {showModal && <Modal onClose={toggleModal} largeImage={modalImage} />}
     </MainContainer>
   );
 };

@@ -6,6 +6,7 @@ export const HeaderSearchBar = styled.header`
   position: sticky;
   z-index: 1100;
   display: flex;
+  flex-direction:column;
   justify-content: center;
   align-items: center;
   min-height: 64px;

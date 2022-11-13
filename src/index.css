@@ -24,6 +24,10 @@ body {
   background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-image: url('../assets/background66.jpg');
+  background-position: center;
+  min-height: 100vh;
 }
 
 img {

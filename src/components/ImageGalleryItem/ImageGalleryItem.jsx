@@ -2,11 +2,11 @@ import React from 'react';
 import { Item, Image } from './ImageGalleryItem.styled';
 import propTypes from 'prop-types';
 
+
 const ImageGalleryItem = ({
-  largeImage,
   smalImage,
-  toggleModal,
-  modalImage,
+  setLightBox,
+  idx
 }) => {
   return (
     <Item>
@@ -14,8 +14,7 @@ const ImageGalleryItem = ({
         src={smalImage}
         alt="#"
         onClick={() => {
-          toggleModal();
-          modalImage(largeImage);
+          setLightBox((prevState)=>({...prevState,photoIndex:idx,isOpen:true}))
         }}
       />
     </Item>
@@ -23,10 +22,7 @@ const ImageGalleryItem = ({
 };
 
 ImageGalleryItem.propTypes = {
-  largeImage: propTypes.string.isRequired,
   smalImage: propTypes.string.isRequired,
-  toggleModal: propTypes.func.isRequired,
-  modalImage: propTypes.func.isRequired,
 };
 
 export default ImageGalleryItem;
